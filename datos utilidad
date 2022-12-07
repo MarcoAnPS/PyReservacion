@@ -1,0 +1,21 @@
+<div class="col-12 col-md-4">
+        <div class="card mb-2">
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-login">
+                Ingresar al sistema
+            </button>
+        </div>
+    </div>
+
+    <div class="card col-sm-4 bg-info">
+        <img class="card-img-top" src="dist/img/photo2.png" alt="Dist Photo 2">
+        <div class="card-img-overlay d-flex flex-column justify-content-center">
+            <br><br><br><br><br>
+            <a href="#" class="btn btn-sm btn-success"><i class="fas fa-eye"></i>  Ver Mesas</a>
+            <div class="ribbon-wrapper ribbon-xl">
+                <div class="ribbon bg-danger text-xl">
+                    Mesas
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="?ctrl=CtrlProducto&accion=getCatalogo">Ver nuestro catálogo</a>

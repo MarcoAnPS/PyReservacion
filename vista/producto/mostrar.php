@@ -14,10 +14,9 @@
             <th>Descripcion</th>
             <th>Cantidad</th>
             <th>Costo</th>
-            <th>Precio</th>
+            <th>Pu</th>
             <th>Estado</th>
             <th>Categoria</th>
-            <th>Usuario</th>
             <th>Operaciones</th>
           </tr>  
         </thead>
@@ -31,10 +30,9 @@
                 <td><?=$c["Descripcion"]?></td>
                 <td><?=$c["Cantidad"]?></td>
                 <td><?=$c["Costo"]?></td>
-                <td><?=$c["Precio"]?></td>
+                <td><?=$c["Pu"]?></td>
                 <td><?=$c["Estado"]?></td>
                 <td><?=$c["name"]?></td>
-                <td><?=$c["Nickname"]?></td>
                 <td>
                 <a href="?ctrl=CtrlProducto&accion=editar&idProducto=<?=$c["idProducto"]?>">
                     <i class="bi bi-pencil-square"></i> Editar </a>
@@ -46,7 +44,7 @@
         <?php }    ?>
         </tbody>
     </table>
-    <br><a href="?" class="btn btn-primary">
+    <br><a href="s" class="btn btn-primary">
         <i class="bi bi-arrow-90deg-left"></i>
         Retornar</a>
     </div>

@@ -9,6 +9,7 @@ class Mesa extends Modelo {
     private $_Capacidad;
     private $_NroPersonas;
     private $_tabla="mesa";
+    private $_vista="v_mesas";
     private $_bd;
 
     public function __construct($idMesa=null, $Numero=null, $Estado=null, $Capacidad=null, $NroPersonas=null){
@@ -19,15 +20,26 @@ class Mesa extends Modelo {
         $this->_Capacidad= $Capacidad;
         $this->_NroPesonas= $NroPersonas;
     }
+    public function getDetalles(){
+        $sql= "SELECT * FROM ". $this->_vista 
+            . " WHERE idMesa=".$this->_idMesa;
+        
+        $datos= $this->_bd->ejecutar($sql);  
+
+        $sql= "SELECT * FROM imagenes_mesa" 
+           . " WHERE idMesa=".$this->_idProducto;
+        $datos['imagenes']= $this->_bd->ejecutar($sql);
+    
+    }
     public function leer(){
         $sql ="SELECT * FROM ". $this->_tabla .";";
         return $this->_bd->ejecutar($sql);
     }
      public function leerUno(){
-        $sql= "SELECT * FROM ". $this->_tabla 
+        $sql= "SELECT * FROM ". $this->_vista 
             . " WHERE idMesa=".$this->_idMesa;
         
-        $datos= $this->_bd->ejecutar($sql);  
+        $datos= $this->_bd->ejecutar($sql);
         //var_dump($datos);exit();
         if (is_array($datos['data'])){
             $this->_idMesa = $datos['data'][0]["idMesa"];
@@ -76,4 +88,23 @@ class Mesa extends Modelo {
     public function getNroPersonas(){
         return $this->_NroPesonas;
     }
+    public function getMesasCarrito()    {
+        $mes = null;
+        $mesas = $_SESSION['carrito']->getMesas();
+        // var_dump($mesas);exit();
+        if (!empty($mesas)){
+            foreach ($mesas as $key => $value) 
+            $mes[] =$key;
+         
+            $misMesas=implode(",", $mes);
+
+            $sql= "SELECT * FROM ". $this->_vista 
+                . " WHERE idMesa in(".$misMesas.")";
+            // var_dump($sql); exit();
+            return $this->_bd->ejecutar($sql); 
+        }else{
+            return null;
+        }
+    }
 }
+

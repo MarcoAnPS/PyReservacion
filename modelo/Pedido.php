@@ -14,6 +14,8 @@ class Pedido extends Modelo {
     private $_cliente;
     private $_mesa;
     private $_usuario;
+    private $_detalles;
+
     private $_tabla="pedido";
     private $_vista="v_pedidos";
     private $_bd;
@@ -48,6 +50,9 @@ class Pedido extends Modelo {
     }
     public function getUsuario(){
         return $this->_usuario;
+    }
+    public function addDetalle(Detalle $d){
+        $this->_detalles[]=$d;
     }
     public function leer(){
         $sql ="SELECT * FROM ". $this->_vista .";";
@@ -91,7 +96,7 @@ class Pedido extends Modelo {
         return $this->_bd->ejecutar($sql);
     }
 
-    public function nuevo(){
+    public function nuevo($total=0,$idCliente=1,$detalles=null){
         $sql = "INSERT INTO ". $this->_tabla 
             ." (idPedido, Numero, Fecha, Pago, Estado, idCliente, idMesa, idUsuario) VALUES (".
                 $this->_idPedido .",'". $this->_Numero ."','". $this->_Fecha ."','". $this->_Pago ."','". $this->_Estado ."',"
@@ -100,7 +105,15 @@ class Pedido extends Modelo {
                 . $this->_usuario->getidUsuario()
             .");";
         // var_dump($sql); exit();
-        return $this->_bd->ejecutar($sql);
+        $this->_bd->ejecutar($sql);
+        
+        foreach ($detalles as $d) {
+            $sql = "INSERT INTO datallepedido" 
+            ." (Cantidad, Pu, Subtotal, idProducto) VALUES (".
+                $d['Cantidad'] .",". $d['Pu'].",". $d['Subtotal'].",". $d['idProducto']
+            .");";
+        $this->_bd->ejecutar($sql);
+        }
     }
     public function getidPedido(){
         return $this->_idPedido;
@@ -116,5 +129,14 @@ class Pedido extends Modelo {
     }
     public function getEstado(){
         return $this->_Estado;
+    }
+    
+    public function getUltimaFacPeDetalleCliente($id)  {
+        $sql = "SELECT * FROM `v_Pedidos` WHERE idPedido=idPedidoCliente(".$id.")";
+        return $this->_bd->ejecutar($sql);
+    }
+    public function getUltimoPedidoCliente($id)  {
+        $sql = "SELECT * FROM ". $this->_tabla." WHERE idPedido=idPedidoCliente(".$id.")";
+        return $this->_bd->ejecutar($sql);
     }
 }

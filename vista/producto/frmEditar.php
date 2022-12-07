@@ -28,7 +28,7 @@
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text">Precio:</span>
-            <input type="text" name="Precio" value="<?=$producto->getPrecio()?>" 
+            <input type="text" name="Pu" value="<?=$producto->getPu()?>" 
                 class="form-control">
         </div>
         <div class="input-group mb-3">
@@ -49,24 +49,6 @@
                             $seleccionado="";
                 ?>
                 <option <?=$seleccionado?>  value="<?=$ca['idCategoria']?>"><?=$ca['Nombre']?></option>
-                <?php } ?>
-
-            </select>
-            
-        </div>
-        <div class="col-md-6">
-            <label for="inputUsuario" class="form-label">Usuario:</label>
-            <select class="form-control" name="usuario" id="Usuario">
-                <?php 
-                $usuarios= $producto->getUsuario()->leer()['data'];
-                $usuario = $producto->getUsuario()->getidUsuario();
-                foreach ($usuarios as $u) {
-                    if ($u["idUsuario"]==$usuario) 
-                            $seleccionado="selected";
-                        else   
-                            $seleccionado="";
-                ?>
-                <option <?=$seleccionado?>  value="<?=$u['idUsuario']?>"><?=$u['Nickname']?></option>
                 <?php } ?>
 
             </select>

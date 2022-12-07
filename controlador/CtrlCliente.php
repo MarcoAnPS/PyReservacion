@@ -1,6 +1,7 @@
 <?php
 require_once SYS . DIRECTORY_SEPARATOR . 'Controlador.php';
 require_once MOD .DIRECTORY_SEPARATOR . 'Cliente.php';
+require_once MOD .DIRECTORY_SEPARATOR . 'Carrito.php';
 require_once REC . DIRECTORY_SEPARATOR . 'Libreria.php';
 /*
 * Clase CtrlCiudad
@@ -21,7 +22,9 @@ class CtrlCliente extends Controlador {
             'contenido'=>Vista::mostrar('cliente/mostrar.php',$resultado,true),
             'menu'=>$menu,
             'migas'=>$migas,
-            'msg'=>$msg
+            'msg'=>$msg,
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
         );
         //var_dump($obj->leerUno());exit();
         $this->mostrarVista('template.php',$datos);
@@ -47,7 +50,9 @@ class CtrlCliente extends Controlador {
                 'contenido'=>Vista::mostrar('cliente/frmNuevo.php',$datos1,true),
                 'menu'=>$menu,
                 'migas'=>$migas,
-                'msg'=>$msg
+                'msg'=>$msg,
+                'cssGbl'=>Libreria::cssGlobales(),
+                'jsGbl'=>Libreria::jsGlobales()
             );
         //var_dump ($sql);exit();
         $this->mostrarVista('template.php',$datos);
@@ -107,7 +112,9 @@ class CtrlCliente extends Controlador {
                     'contenido'=>Vista::mostrar('cliente/frmEditar.php',$datos1,true),
                     'menu'=>$menu,
                     'migas'=>$migas,
-                    'msg'=>$msg
+                    'msg'=>$msg,
+                    'cssGbl'=>Libreria::cssGlobales(),
+                    'jsGbl'=>Libreria::jsGlobales()
                 );
             }
         }else {

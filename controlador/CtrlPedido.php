@@ -1,6 +1,8 @@
 <?php
 require_once SYS . DIRECTORY_SEPARATOR . 'Controlador.php';
+require_once MOD .DIRECTORY_SEPARATOR . 'Producto.php';
 require_once MOD .DIRECTORY_SEPARATOR . 'Pedido.php';
+require_once MOD .DIRECTORY_SEPARATOR . 'Carrito.php';
 require_once REC . DIRECTORY_SEPARATOR . 'Libreria.php';
 /*
 * Clase CtrlCiudad
@@ -21,7 +23,9 @@ class CtrlPedido extends Controlador {
             'contenido'=>Vista::mostrar('pedido/mostrar.php',$resultado,true),
             'menu'=>$menu,
             'migas'=>$migas,
-            'msg'=>$msg
+            'msg'=>$msg,
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
         );
         //var_dump($obj->leerUno());exit();
         $this->mostrarVista('template.php',$datos);
@@ -47,7 +51,9 @@ class CtrlPedido extends Controlador {
                 'contenido'=>Vista::mostrar('pedido/frmNuevo.php',$datos1,true),
                 'menu'=>$menu,
                 'migas'=>$migas,
-                'msg'=>$msg
+                'msg'=>$msg,
+                'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
             );
         //var_dump ($sql);exit();
         $this->mostrarVista('template.php',$datos);
@@ -68,6 +74,67 @@ class CtrlPedido extends Controlador {
 
         $this->index($respuesta['msg']);
     }
+    public function guardarNuevoPedido(){
+        $obj = new Producto();
+        $data=$obj->getProductosCarrito();
+        $total=0;
+        $datosDetalle=null;
+        //var_dump($data);exit(); 
+        foreach ($data['data'] as $p) {
+            $cant = $_SESSION['carrito']->getCantidad($p['idProducto']);
+            $pu = $p['Pu'];
+            $subTotal = $cant * $pu;
+            
+            $datosDetalle[]=array(
+                'Cantidad'=>$cant,
+                'Pu'=>$pu,
+                'Subtotal'=>$subTotal,
+                'idProducto'=>$p['idProducto']
+                );
+            $total += $cant * $pu;
+        }
+        //var_dump($_SESSION);exit();
+        $obj = new Pedido();
+        $obj->nuevo($total, $_SESSION['id'],$datosDetalle);
+
+        $this->registrarReserva();
+    }
+
+    public function registrarReserva(){
+        $obj = new Pedido();
+        $data=$obj->getUltimoPedidoCliente($_SESSION['id']);
+
+        $menu= Libreria::getMenu();
+        $migas = array(
+            '?'=>'Inicio',
+        );
+        // $datosGraf= $this->getGraficoModelosXMarcas();
+        unset($_SESSION['carrito']);
+        
+        $datos = array(
+            'titulo'=>"Registro de Reserva Realizado",
+            'contenido'=>Vista::mostrar('pedido/registroPedido.php',$data,true),
+            'menu'=>$menu,
+            'migas'=>$migas,
+            'msg'=>array(
+                    'titulo'=>'',
+                    'cuerpo'=>''
+            ),
+            
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
+        );
+        
+        $this->mostrarVista('template.php',$datos);
+
+    }
+
+    public function imprimir(){
+        $obj = new Pedido();
+        $data=$obj->getUltimaFacPeDetalleCliente($_SESSION['id']);
+        Vista::mostrar('pedido/facPedido.php',$data);
+    }
+
     public function eliminar(){
         if (isset($_REQUEST['idPedido'])) {
             $obj = new Pedido($_REQUEST['idPedido']);
@@ -107,7 +174,9 @@ class CtrlPedido extends Controlador {
                     'contenido'=>Vista::mostrar('pedido/frmEditar.php',$datos1,true),
                     'menu'=>$menu,
                     'migas'=>$migas,
-                    'msg'=>$msg
+                    'msg'=>$msg,
+                    'cssGbl'=>Libreria::cssGlobales(),
+                    'jsGbl'=>Libreria::jsGlobales()
                 );
             }
         }else {

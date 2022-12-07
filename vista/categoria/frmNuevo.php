@@ -5,7 +5,7 @@
         <div class="col-md-6">
             <label for="inputidCategoria" class="form-label">Id:</label>
             <input type="text" class="form-control"
-                name="idCategoria" value="" id="inputidCategoria">
+                name="id" value="" id="inputidCategoria">
         </div>
         <div class="col-md-6">
             <label for="inputNombre" class="form-label">Nombre:</label>
@@ -20,11 +20,8 @@
         </div>
         <div class="col-md-3">
         <button type="submit" class="form-control btn btn-primary">
-            <i class="bi bi-save2"></i> Guardar</button>
+            <i class="fa fa-save"></i> Guardar</button>
         </div>
     </form>
-    <br><a href="?ctrl=CtrlCategoria" class="btn btn-primary">
-        <i class="bi bi-arrow-90deg-left"></i>
-        Retornar</a>
 </div>
 </section>

@@ -1,0 +1,1 @@
+ErrorDocument 404 http://localhost/PyReservacion2/?ctrl=none&accion=none

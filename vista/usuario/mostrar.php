@@ -12,6 +12,10 @@
             <th>Id</th>
             <th>Nickname</th>
             <th>Contraseña </th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th>tipoUsuario</th>
             <th>Operaciones</th>
           </tr>  
         </thead>
@@ -23,6 +27,10 @@
                 <td><?=$c["idUsuario"]?></td>
                 <td><?=$c["Nickname"]?></td>
                 <td><?=$c["Contraseña"]?></td>
+                <td><?=$c["nombre"]?></td>
+                <td><?=$c["email"]?></td>
+                <td><?=$c["Estado"]?></td>
+                <td><?=$c["tipo"]?></td>
                 <td>
                 <a href="?ctrl=CtrlUsuario&accion=editar&idUsuario=<?=$c["idUsuario"]?>">
                     <i class="bi bi-pencil-square"></i> Editar </a>

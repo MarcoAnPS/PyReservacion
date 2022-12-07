@@ -3,7 +3,7 @@
 error_reporting (E_ALL | E_STRICT);
 /* RUTAS */
 define('HOME', 'c:\xampp\htdocs');
-define('APP_NAME', 'PyReservacion');
+define('APP_NAME', 'Reservacion-Py');
 define('APP', HOME . DIRECTORY_SEPARATOR . APP_NAME );
 
 define('URL', 'http://localhost');
@@ -21,3 +21,6 @@ define('PER', APP . DIRECTORY_SEPARATOR . 'persistencia');
 
 /* recursos */
 define('REC', APP . DIRECTORY_SEPARATOR . 'recursos');
+
+/* errores */
+define('ERR', APP . DIRECTORY_SEPARATOR . 'php_error_log');

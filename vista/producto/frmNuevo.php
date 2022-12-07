@@ -27,9 +27,9 @@
             <input type="text" class="form-control"
                 name="Costo" value="" id="inputCosto">
         </div><div class="col-md-6">
-            <label for="inputPrecio" class="form-label">Precio:</label>
+            <label for="inputPu" class="form-label">Pu:</label>
             <input type="text" class="form-control"
-                name="Precio" value="" id="inputPrecio">
+                name="Pu" value="" id="inputPu">
         </div>
         <div class="col-md-6">
             <label for="inputEstado" class="form-label">Estado:</label>
@@ -46,20 +46,7 @@
                 <option value="<?=$ca['idCategoria']?>"><?=$ca['Nombre']?></option>
                 <?php } ?>
 
-            </select>
-            
-        </div>
-        <div class="col-md-6">
-            <label for="inputUsuario" class="form-label">Usuario:</label>
-            <select class="form-control" name="usuario" id="Usuario">
-                <?php 
-                $usuarios= $producto->getUsuario()->leer()['data'];
-                foreach ($usuarios as $u) {
-                ?>
-                <option value="<?=$u['idUsuario']?>"><?=$u['Nickname']?></option>
-                <?php } ?>
-
-            </select>
+            </select> 
         </div>
         </div>
         <div class="col-md-3">

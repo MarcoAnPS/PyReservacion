@@ -1,13 +1,15 @@
 <?php
 require_once SYS . DIRECTORY_SEPARATOR . 'Controlador.php';
 require_once MOD .DIRECTORY_SEPARATOR . 'Producto.php';
+require_once MOD .DIRECTORY_SEPARATOR . 'Mesa.php';
+require_once MOD .DIRECTORY_SEPARATOR . 'Carrito.php';
 require_once REC . DIRECTORY_SEPARATOR . 'Libreria.php';
 /*
 * Clase CtrlCiudad
 */
 class CtrlProducto extends Controlador {
     
-    public function index($msg=''){
+    public function index($msg=array('titulo'=>'','cuerpo'=>'')){
         $menu= Libreria::getMenu();
         $migas = array(
             '?'=>'Inicio',
@@ -15,13 +17,15 @@ class CtrlProducto extends Controlador {
 
         $obj = new Producto();
         $resultado = $obj->leer();
-
+       // var_dump($resultado);exit();
         $datos = array(
             'titulo'=>"Productos",
             'contenido'=>Vista::mostrar('producto/mostrar.php',$resultado,true),
             'menu'=>$menu,
             'migas'=>$migas,
-            'msg'=>$msg
+            'msg'=>$msg,
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
         );
         //var_dump($obj->leerUno());exit();
         $this->mostrarVista('template.php',$datos);
@@ -47,10 +51,13 @@ class CtrlProducto extends Controlador {
                 'contenido'=>Vista::mostrar('producto/frmNuevo.php',$datos1,true),
                 'menu'=>$menu,
                 'migas'=>$migas,
-                'msg'=>$msg
+                'msg'=>$msg,
+                'cssGbl'=>Libreria::cssGlobales(),
+                'jsGbl'=>Libreria::jsGlobales()
             );
         //var_dump ($sql);exit();
         $this->mostrarVista('template.php',$datos);
+        //var_dump ($sql);exit();
     }
 
     public function guardarNuevo(){
@@ -60,14 +67,13 @@ class CtrlProducto extends Controlador {
                 $_POST["Descripcion"],
                 $_POST["Cantidad"],
                 $_POST["Costo"],
-                $_POST["Precio"],
+                $_POST["Pu"],
                 $_POST["Estado"],
                 $_POST["categoria"],
-                $_POST["usuario"],
                 );
         $respuesta=$obj->nuevo();
-
         $this->index($respuesta['msg']);
+        // var_dump ($sql);exit();
     }
     public function eliminar(){
         if (isset($_REQUEST['idProducto'])) {
@@ -98,7 +104,6 @@ class CtrlProducto extends Controlador {
                     'cuerpo'=>'ID Requerido: '.$_REQUEST['idProducto']. ' No Existe')
                 );
             }else{
-
                 $datos1 = array(
                         'producto'=>$obj
                     );
@@ -108,7 +113,9 @@ class CtrlProducto extends Controlador {
                     'contenido'=>Vista::mostrar('producto/frmEditar.php',$datos1,true),
                     'menu'=>$menu,
                     'migas'=>$migas,
-                    'msg'=>$msg
+                    'msg'=>$msg,
+                    'cssGbl'=>Libreria::cssGlobales(),
+                    'jsGbl'=>Libreria::jsGlobales()
                 );
             }
         }else {
@@ -135,15 +142,85 @@ class CtrlProducto extends Controlador {
                 $_POST["Descripcion"],
                 $_POST["Cantidad"],
                 $_POST["Costo"],
-                $_POST["Precio"],
+                $_POST["Pu"],
                 $_POST["Estado"],
                 $_POST["categoria"],
-                $_POST["usuario"],
                 );
 
         //var_dump($obj->leerUno());exit();
         $respuesta=$obj->editar();
         
         $this->index($respuesta['msg']);
+    }
+    public function getProductoesSelect(){
+        $idProducto = $_GET['idProducto'];
+        $obj = new Producto();
+        $datos = $obj->leerXPais($idProducto)['data'];
+        $html = '<option value="0">Seleccionar...</option>';
+        foreach ($datos as $d) {
+            $html .= '<option value="'.$d['idProducto'].'">'.$d['Nombre'].'</option>';
+        }
+        echo $html;
+    }
+    public function getCatalogo(){
+        $menu= Libreria::getMenu();
+        $migas = array(
+            '?'=>'Inicio',
+            '#'=>'Catálogo',
+        );
+
+        $obj = new Producto();
+        $resultado = $obj->leer();
+
+        $obj= new Mesa();
+        $resultado1 = $obj->leer();
+        $data = array(
+            'productos'=> $resultado['data'],
+            'mesas'=> $resultado1['data']
+        );
+        //var_dump($data);exit();
+        $msg=array(!isset($_GET['idProducto']))?array('titulo'=>'','cuerpo'=>''):array('titulo'=>'Nuevo elemento','cuerpo'=>'Se agregó un elemento al Carrito');
+        $datos = array(
+            'titulo'=>"Catálogo",
+            'contenido'=>Vista::mostrar('producto/catalogo.php',$data,true),
+            'menu'=>$menu,
+            'migas'=>$migas,
+            'msg'=>$msg,
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
+        );
+        
+        $this->mostrarVista('template.php',$datos);
+    }
+    public function verDetalles(){
+        $menu= Libreria::getMenu();
+        $migas = array(
+            '?'=>'Inicio',
+            '?ctrl=CtrlProducto&accion=getCatalogo'=>'Catálogo',
+            '#'=>'Detalles',
+        );
+        $idProducto = $_GET['idProducto'];
+        $jsVista = array(
+                array(
+                'url'=>'recursos/js/jsImagenes.js'
+                )
+            );
+
+        $obj = new Producto($idProducto);
+        $resultado = $obj->getDetalles();
+       // var_dump($resultado);exit();
+        $msg=array('titulo'=>'','cuerpo'=>'');
+        $datos = array(
+            'titulo'=>"Detalles",
+            'contenido'=>Vista::mostrar('producto/detalles.php',$resultado,true),
+            'menu'=>$menu,
+            'migas'=>$migas,
+            'msg'=>$msg,
+            'js'=>$jsVista,
+            'cssGbl'=>Libreria::cssGlobales(),
+            'jsGbl'=>Libreria::jsGlobales()
+        );
+        
+        $this->mostrarVista('template.php',$datos);
     }
 }

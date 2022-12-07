@@ -10,25 +10,36 @@ class Producto extends Modelo {
     private $_Descripcion;
     private $_Cantidad;
     private $_Costo;
-    private $_Precio;
+    private $_Pu;
     private $_Estado;
     private $_categoria;
-    private $_usuario;
     private $_tabla="producto";
     private $_vista="v_productos";
+    private $_vista1="v_categorias01";
     private $_bd;
 
-    public function __construct($idProducto=null, $Nombre=null,$Descripcion=null,$Cantidad=null,$Costo=null,$Precio=null,$Estado=null,$Categoria=null,$Usuario=null){
+    public function __construct($idProducto=null, $Nombre=null,$Descripcion=null,$Cantidad=null,$Costo=null,$Pu=null,$Estado=null,$Categoria=null){
         $this->_bd = new BaseDeDatos(new MySQL());
         $this->_idProducto = $idProducto;
         $this->_Nombre= $Nombre;
         $this->_Descripcion= $Descripcion;
         $this->_Cantidad= $Cantidad;
         $this->_Costo= $Costo;
-        $this->_Precio= $Precio;
+        $this->_Pu= $Pu;
         $this->_Estado= $Estado;
         $this->_categoria= new Categoria($Categoria);
-        $this->_usuario= new Usuario($Usuario);
+    }
+    public function getDetalles(){
+        $sql= "SELECT * FROM ". $this->_vista 
+            . " WHERE idProducto=".$this->_idProducto;
+        
+        $datos= $this->_bd->ejecutar($sql);  
+
+        $sql= "SELECT * FROM imagenes_producto" 
+           . " WHERE idProducto=".$this->_idProducto;
+        $datos['imagenes']= $this->_bd->ejecutar($sql);
+    
+        return $datos; 
     }
     public function setCategoria (Categoria $ca){
         $this->_categoria= $ca;
@@ -36,11 +47,6 @@ class Producto extends Modelo {
     public function getCategoria(){
         return $this->_categoria;
     
-    }public function setUsuario (Usuario $u){
-        $this->_usuario= $u;
-    }
-    public function getUsuario(){
-        return $this->_usuario;
     }
     public function leer(){
         $sql ="SELECT * FROM ". $this->_vista .";";
@@ -58,10 +64,9 @@ class Producto extends Modelo {
             $this->_Descripcion = $datos['data'][0]["Descripcion"];
             $this->_Cantidad = $datos['data'][0]["Cantidad"];
             $this->_Costo = $datos['data'][0]["Costo"];
-            $this->_Precio = $datos['data'][0]["Precio"];
+            $this->_Pu = $datos['data'][0]["Pu"];
             $this->_Estado = $datos['data'][0]["Estado"];
             $this->_categoria = new Categoria ($datos['data'][0]["idCategoria"]);
-            $this->_usuario = new Usuario ($datos['data'][0]["idUsuario"]);
         }
     
         return $datos; 
@@ -77,10 +82,9 @@ class Producto extends Modelo {
             . ",Descripcion='". $this->_Descripcion."'"
             . ",Cantidad='". $this->_Cantidad."'"
             . ",Costo='". $this->_Costo."'"
-            . ",Precio='". $this->_Precio."'"
+            . ",Pu='". $this->_Pu."'"
             . ",Estado='". $this->_Estado."'"
             . ",idCategoria=".$this->_categoria->getidCategoria()
-            . ",idUsuario=".$this->_usuario->getidUsuario()
             ." WHERE idProducto=".$this->_idProducto.";";
         //var_dump($sql); exit();
         return $this->_bd->ejecutar($sql);
@@ -88,12 +92,11 @@ class Producto extends Modelo {
 
     public function nuevo(){
         $sql = "INSERT INTO ". $this->_tabla 
-            ." (idProducto, Nombre, Descripcion, Cantidad, Costo, Precio, Estado, idCategoria, idUsuario) VALUES (".
-                $this->_idProducto .",'". $this->_Nombre ."','". $this->_Descripcion ."','". $this->_Cantidad ."','". $this->_Costo ."','". $this->_Precio ."','". $this->_Estado ."',"
-                . $this->_categoria->getidCategoria().","
-                . $this->_usuario->getidUsuario()
+            ." (idProducto, Nombre, Descripcion, Cantidad, Costo, Pu, Estado, idCategoria) VALUES (".
+                $this->_idProducto .",'". $this->_Nombre ."','". $this->_Descripcion ."','". $this->_Cantidad ."','". $this->_Costo ."','". $this->_Pu ."','". $this->_Estado ."',"
+                . $this->_categoria->getidCategoria()
             .");";
-        // var_dump($sql); exit();
+        //var_dump($sql); exit();
         return $this->_bd->ejecutar($sql);
     }
     public function getidProducto(){
@@ -111,10 +114,29 @@ class Producto extends Modelo {
     public function getCosto(){
         return $this->_Costo;
     }
-    public function getPrecio(){
-        return $this->_Precio;
+    public function getPu(){
+        return $this->_Pu;
     }
     public function getEstado(){
         return $this->_Estado;
+    }
+    public function getProductosCarrito()    {
+        $prod = null;
+        $productos = $_SESSION['carrito']->getProductos();  
+        // var_dump($productos);exit();
+        if (!empty($productos)){
+            foreach ($productos as $key => $value) 
+            $prod[] =$key;
+         
+            $misProductos=implode(",", $prod);
+
+            $sql= "SELECT * FROM ". $this->_vista 
+                . " WHERE idProducto in(".$misProductos.")";
+            // var_dump($sql); exit();
+            return $this->_bd->ejecutar($sql); 
+        }else{
+            return null;
+        }
+        
     }
 }
